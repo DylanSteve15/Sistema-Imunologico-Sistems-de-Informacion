@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Inmunológico ERP</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --gray-light: #e2e8f0;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f0f4ff 0%, #f9f5ff 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #1e293b;
+        }
+        
+        /* NAVBAR */
+        .navbar {
+            background: linear-gradient(90deg, var(--dark), var(--primary-dark)) !important;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            padding: 1rem 0;
+        }
+        
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white !important;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .navbar-brand i {
+            font-size: 1.8rem;
+            color: var(--accent);
+        }
+        
+        /* BUTTONS */
+        .btn {
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-dark), var(--secondary));
+            color: white;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            color: white;
+        }
+        
+        .btn-info {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            color: white;
+        }
+        
+        .btn-info:hover {
+            background: linear-gradient(135deg, #0891b2, #0e7490);
+            color: white;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: linear-gradient(135deg, #047857, var(--success));
+            color: white;
+        }
+        
+        .btn-outline-light {
+            color: white;
+            border-color: rgba(255,255,255,0.3);
+            border-width: 2px;
+        }
+        
+        .btn-outline-light:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-color: white;
+        }
+        
+        /* CARDS */
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .card:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            transform: translateY(-2px);
+        }
+        
+        .card-header {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 12px 12px 0 0 !important;
+            font-weight: 600;
+            padding: 1.25rem;
+        }
+        
+        /* PANEL LATERAL */
+        #sidepanel {
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        #sidepanel .card {
+            background: white;
+            border-left: 4px solid var(--accent);
+        }
+        
+        #sidepanel label {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .form-select {
+            border: 2px solid var(--gray-light);
+            border-radius: 8px;
+            padding: 0.75rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+        }
+        
+        /* MENSAJES */
+        #mensaje .alert {
+            border-radius: 10px;
+            border: none;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .alert-success {
+            background: linear-gradient(90deg, #d1fae5, #a7f3d0);
+            color: #065f46;
+        }
+        
+        .alert-danger {
+            background: linear-gradient(90deg, #fee2e2, #fecaca);
+            color: #7f1d1d;
+        }
+        
+        .alert-warning {
+            background: linear-gradient(90deg, #fef3c7, #fde68a);
+            color: #78350f;
+        }
+        
+        /* TABLES */
+        .table {
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .table thead {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+        }
+        
+        .table tbody tr:hover {
+            background: rgba(99, 102, 241, 0.05);
+        }
+        
+        .table-success {
+            background: rgba(16, 185, 129, 0.1) !important;
+        }
+        
+        .table-responsive {
+            max-height: 70vh;
+            border-radius: 8px;
+            border: 1px solid var(--gray-light);
+        }
+        
+        /* TOOLBAR */
+        .toolbar {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .toolbar .btn {
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        @media (max-width: 768px) {
+            .toolbar .btn {
+                min-width: auto;
+                flex: 0 1 auto;
+            }
+            #sidepanel { display: none !important; }
+        }
+        
+        /* CONTENEDOR PRINCIPAL */
+        .main-content {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        }
+        
+        h2 {
+            color: var(--dark);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        
+        h3 {
+            color: var(--primary);
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-dark">
+    <div class="container-fluid">
+        <button class="btn btn-outline-light btn-sm me-3" onclick="toggleSide()">
+            <i class="fas fa-bars"></i>
+        </button>
+        <span class="navbar-brand">
+            <i class="fas fa-shield-virus"></i>
+            Sistema Inmunológico ERP
+        </span>
+        <button class="btn btn-outline-light btn-sm ms-auto" onclick="goBack()">
+            <i class="fas fa-arrow-left me-1"></i> Atrás
+        </button>
+    </div>
+</nav>
+
+<div class="container-fluid mt-4">
+    <!-- Toolbar con acciones principales -->
+    <div class="toolbar mb-4">
+        <button class="btn btn-primary" onclick="loadPanel('tablas')">
+            <i class="fas fa-database me-2"></i>Explorar Tablas
+        </button>
+        <button class="btn btn-danger" onclick="loadPanel('alertas')">
+            <i class="fas fa-exclamation-circle me-2"></i>Ver Alertas
+        </button>
+        <button class="btn btn-info" onclick="loadPanel('memoria')">
+            <i class="fas fa-history me-2"></i>Ver Memoria
+        </button>
+    </div>
+
+    <div class="row g-4">
+        <!-- PANEL LATERAL -->
+        <div class="col-lg-3" id="sidepanel">
+            <div class="card shadow">
+                <div class="card-header">
+                    <i class="fas fa-list me-2"></i>Panel de Control
+                </div>
+                <div class="card-body">
+                    <label class="form-label">
+                        <i class="fas fa-table me-2" style="color: var(--primary);"></i>Selecciona una tabla:
+                    </label>
+                    <select id="tabla" class="form-select mb-3" onchange="cargarFormulario()">
+                        <option value="">-- Elige una tabla --</option>
+                        {% for t in tablas %}
+                            <option value="{{t[0]}}">{{t[0]}}</option>
+                        {% endfor %}
+                    </select>
+                    
+                    <div class="alert alert-info mt-3 small">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Tip:</strong> Selecciona una tabla para insertar datos. El sistema analizará automáticamente cada entrada.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <div class="col-lg-9">
+            <!-- Sección de mensajes -->
+            <div id="mensaje"></div>
+
+            <!-- Sección principal -->
+            <div id="panel"></div>
+
+            <!-- Sección de formularios -->
+            <div id="formulario"></div>
+
+            <!-- Sección de datos -->
+            <div id="tabla_datos"></div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+<script>
+function loadPanel(name) {
+    if (name === 'home') {
+        document.getElementById('panel').innerHTML = `
+            <div class="card shadow-lg">
+                <div class="card-header">
+                    <i class="fas fa-home me-2"></i>Bienvenido al Sistema Inmunológico
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">¿Cómo funciona?</h5>
+                    <p class="card-text">
+                        Este sistema monitorea tu base de datos como lo hace el sistema inmunológico humano:
+                    </p>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><i class="fas fa-circle-check text-success me-2"></i>Aprende patrones normales</li>
+                        <li class="list-group-item"><i class="fas fa-shield-alt text-primary me-2"></i>Detecta anomalías en tiempo real</li>
+                        <li class="list-group-item"><i class="fas fa-ban text-danger me-2"></i>Bloquea operaciones sospechosas</li>
+                        <li class="list-group-item"><i class="fas fa-memory text-info me-2"></i>Registra historial para mejorar</li>
+                    </ul>
+                </div>
+            </div>
+        `;
+        return;
+    }
+
+    // Para formularios: NO añadir /api/ (usa render_template)
+    // Para otros: Añadir /api/ (retorna HTML raw)
+    const url = name.startsWith('formulario/') ? '/' + name : '/api/' + name;
+
+    fetch(url)
+    .then(res => res.text())
+    .then(html => {
+        document.getElementById('panel').innerHTML = html;
+        document.getElementById('formulario').innerHTML = '';
+        document.getElementById('tabla_datos').innerHTML = '';
+        try { 
+            window._panelHistory = window._panelHistory || []; 
+            window._panelHistory.push(name); 
+        } catch(e){}
+    })
+    .catch(e => {
+        console.error(e);
+        document.getElementById('mensaje').innerHTML = `
+            <div class="alert alert-danger">
+                <i class="fas fa-times-circle me-2"></i>Error al cargar panel: ${e}
+            </div>
+        `;
+    });
+}
+
+function cargarFormulario() {
+    let tabla = document.getElementById("tabla").value;
+    if (!tabla) return;
+    loadPanel('formulario/' + tabla);
+    setTimeout(() => cargarDatos(tabla), 200);
+}
+
+function guardarDatos() {
+    let form = document.getElementById("formDinamico");
+    if (!form) return;
+    let data = new FormData(form);
+
+    fetch("/api/insertar", {
+        method: "POST",
+        body: data
+    })
+    .then(res => res.json())
+    .then(resp => {
+        let tipo = resp.tipo || 'info';
+        let mensaje = resp.mensaje || '';
+        let out = '';
+
+        if (resp.anomalias && resp.anomalias.length) {
+            out += `<div class="alert alert-${tipo === 'success' ? 'success' : 'warning'} alert-dismissible fade show">
+                <i class="fas fa-${tipo === 'success' ? 'check' : 'exclamation'}-circle me-2"></i>
+                <strong>${mensaje}</strong>
+                <ul class="mt-2 mb-0">`;
+            resp.anomalias.forEach(a => out += `<li>${a}</li>`);
+            out += `</ul>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>`;
+        } else {
+            out = `<div class="alert alert-${tipo} alert-dismissible fade show">
+                <i class="fas fa-${tipo === 'success' ? 'check' : 'info'}-circle me-2"></i>
+                ${mensaje}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>`;
+        }
+
+        document.getElementById("mensaje").innerHTML = out;
+
+        if (tipo === 'success') {
+            // Buscar tabla desde input hidden en formulario o desde select del panel
+            let tabla_input = document.getElementById('tabla_form');
+            let tabla = tabla_input ? tabla_input.value : document.getElementById('tabla').value;
+            
+            console.log("Recargando tabla:", tabla);
+            
+            if (tabla) {
+                // Mostrar una notificación de carga
+                document.getElementById("tabla_datos").innerHTML = '<div class="alert alert-info"><i class="fas fa-spinner fa-spin me-2"></i>Recargando tabla...</div>';
+                
+                // Recargar después de 500ms para asegurar que los datos están en BD
+                setTimeout(() => {
+                    cargarDatos(tabla);
+                    console.log("Tabla recargada");
+                }, 500);
+            }
+
+            if (resp.last) {
+                setTimeout(()=>{
+                    const row = document.querySelector(`#tabla_datos tr[data-pk="${resp.last.pkval}"]`);
+                    if (row) {
+                        row.classList.add('table-success','animate__animated','animate__pulse');
+                        row.scrollIntoView({behavior:'smooth', block:'center'});
+                    }
+                }, 1000);
+            }
+        }
+    })
+    .catch(e => {
+        console.error(e);
+        document.getElementById("mensaje").innerHTML = `
+            <div class="alert alert-danger">
+                <i class="fas fa-times-circle me-2"></i>Error: ${e}
+            </div>
+        `;
+    });
+}
+
+function cargarDatos(tabla) {
+    fetch("/api/datos/" + tabla)
+    .then(res => res.text())
+    .then(data => {
+        document.getElementById("tabla_datos").innerHTML = data;
+    });
+}
+
+loadPanel('home');
+
+function goBack(){
+    window._panelHistory = window._panelHistory || [];
+    window._panelHistory.pop();
+    const prev = window._panelHistory.pop() || 'home';
+    loadPanel(prev);
+}
+
+function toggleSide() {
+    const side = document.getElementById('sidepanel');
+    if (!side) return;
+    if (side.style.display === 'none') {
+        side.style.display = '';
+    } else {
+        side.style.display = 'none';
+    }
+}
+
+function loadEdit(tabla, pk) {
+    fetch(`/api/get/${tabla}/${pk}`)
+    .then(res => res.text())
+    .then(html => {
+        document.getElementById('formulario').innerHTML = html;
+        document.getElementById('panel').innerHTML = '';
+    });
+}
+
+function guardarEdicion() {
+    let form = document.getElementById('formDinamicoEdit');
+    if (!form) return;
+    let data = new FormData(form);
+
+    fetch('/api/update', { method: 'POST', body: data })
+    .then(res => res.text())
+    .then(resp => {
+        if (resp === 'OK') {
+            document.getElementById('mensaje').innerHTML = `
+                <div class="alert alert-success alert-dismissible fade show">
+                    <i class="fas fa-check-circle me-2"></i>Registro actualizado exitosamente
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            let tabla = document.getElementById('tabla').value;
+            if (tabla) cargarDatos(tabla);
+            document.getElementById('formulario').innerHTML = '';
+        } else {
+            document.getElementById('mensaje').innerHTML = `
+                <div class="alert alert-danger alert-dismissible fade show">
+                    <i class="fas fa-times-circle me-2"></i>${resp}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+        }
+    });
+}
+
+function deleteRow(tabla, pk) {
+    if (!confirm('¿Confirmar eliminación? Esta acción no se puede deshacer.')) return;
+    fetch(`/api/delete/${tabla}/${pk}`)
+    .then(res => res.text())
+    .then(resp => {
+        if (resp === 'OK') {
+            document.getElementById('mensaje').innerHTML = `
+                <div class="alert alert-success alert-dismissible fade show">
+                    <i class="fas fa-check-circle me-2"></i>Registro eliminado exitosamente
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            let tabla = document.getElementById('tabla').value;
+            if (tabla) cargarDatos(tabla);
+            loadPanel('tablas');
+        } else {
+            document.getElementById('mensaje').innerHTML = `
+                <div class="alert alert-danger alert-dismissible fade show">
+                    <i class="fas fa-times-circle me-2"></i>${resp}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+        }
+    });
+}
+</script>
+
+</body>
+</html>
