@@ -106,6 +106,17 @@
             color: white;
         }
         
+        .btn-stats {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            color: white;
+            border-left: 4px solid #f472b6;
+        }
+        
+        .btn-stats:hover {
+            background: linear-gradient(135deg, #7c3aed, #be185d);
+            color: white;
+        }
+        
         .btn-outline-light {
             color: white;
             border-color: rgba(255,255,255,0.3);
@@ -268,11 +279,25 @@
             color: var(--primary);
             font-weight: 600;
         }
+        
+        /* ESTADÍSTICOS ESPECÍFICO */
+        .stat-box {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border: 1px solid var(--gray-light);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
     </style>
 </head>
 
 <body>
-
 <!-- NAVBAR -->
 <nav class="navbar navbar-dark">
     <div class="container-fluid">
@@ -301,6 +326,13 @@
         <button class="btn btn-info" onclick="loadPanel('memoria')">
             <i class="fas fa-history me-2"></i>Ver Memoria
         </button>
+        <!-- 🔥 NUEVO BOTÓN ESTADÍSTICOS -->
+        <button class="btn btn-stats" onclick="loadPanel('estadisticos')">
+            <i class="fas fa-chart-line me-2"></i>📈 Estadísticos
+        </button>
+        <button class="btn btn-warning" onclick="loadPanel('entrenar_ml/venta')">
+            <i class="fas fa-brain me-2"></i>Entrenar ML Venta
+</button>
     </div>
 
     <div class="row g-4">
@@ -397,11 +429,12 @@ function loadPanel(name) {
     });
 }
 
+// Resto del JavaScript SIN CAMBIOS (mismo que tenías)...
 function cargarFormulario() {
     let tabla = document.getElementById("tabla").value;
     if (!tabla) return;
     loadPanel('formulario/' + tabla);
-    setTimeout(() => cargarDatos(tabla), 200);
+    setTimeout(() => cargarDatos(tabla), 5000);
 }
 
 function guardarDatos() {
@@ -439,33 +472,19 @@ function guardarDatos() {
         document.getElementById("mensaje").innerHTML = out;
 
         if (tipo === 'success') {
-            // Buscar tabla desde input hidden en formulario o desde select del panel
-            let tabla_input = document.getElementById('tabla_form');
-            let tabla = tabla_input ? tabla_input.value : document.getElementById('tabla').value;
-            
-            console.log("Recargando tabla:", tabla);
-            
-            if (tabla) {
-                // Mostrar una notificación de carga
-                document.getElementById("tabla_datos").innerHTML = '<div class="alert alert-info"><i class="fas fa-spinner fa-spin me-2"></i>Recargando tabla...</div>';
-                
-                // Recargar después de 500ms para asegurar que los datos están en BD
-                setTimeout(() => {
-                    cargarDatos(tabla);
-                    console.log("Tabla recargada");
-                }, 500);
-            }
+    let tabla_input = document.getElementById('tabla_form');
+    let tabla = tabla_input ? tabla_input.value : document.getElementById('tabla').value;
 
-            if (resp.last) {
-                setTimeout(()=>{
-                    const row = document.querySelector(`#tabla_datos tr[data-pk="${resp.last.pkval}"]`);
-                    if (row) {
-                        row.classList.add('table-success','animate__animated','animate__pulse');
-                        row.scrollIntoView({behavior:'smooth', block:'center'});
-                    }
-                }, 1000);
-            }
-        }
+    if (tabla) {
+        document.getElementById("tabla_datos").innerHTML =
+            '<div class="alert alert-info"><i class="fas fa-spinner fa-spin me-2"></i>Recargando tabla...</div>';
+
+        setTimeout(() => {
+            loadPanel('formulario/' + tabla);
+            cargarDatos(tabla);
+        }, 5000);
+    }
+}
     })
     .catch(e => {
         console.error(e);
@@ -564,6 +583,18 @@ function deleteRow(tabla, pk) {
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             `;
+        }
+    });
+}
+function marcarFalsoPositivo(id) {
+    if(!confirm("¿Confirmar que este registro es legítimo? El sistema aprenderá de esto.")) return;
+    
+    fetch('/api/falso_positivo/' + id)
+    .then(res => res.text())
+    .then(resp => {
+        if(resp === 'OK') {
+            alert("¡Aprendizaje exitoso! El sistema ha registrado esta excepción.");
+            loadPanel('alertas'); // Recarga la vista de alertas
         }
     });
 }
