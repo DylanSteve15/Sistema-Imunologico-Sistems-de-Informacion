@@ -1,283 +1,413 @@
 # 🧬 Sistema Inteligente de Monitoreo de Base de Datos
 ## Inspirado en el Sistema Inmunológico
 
----
+Aplicación web desarrollada en **Python + Flask** para monitorear, validar y proteger la integridad lógica de una base de datos empresarial en **MySQL**, utilizando una metáfora inspirada en el sistema inmunológico humano.
 
-## 📌 Descripción General del Proyecto
-
-El presente proyecto consiste en el diseño e implementación de una aplicación web desarrollada en **Python con Flask**, cuya finalidad es monitorear, analizar y proteger la integridad de una **base de datos empresarial en MySQL**.
-
-El sistema se inspira en el funcionamiento del **sistema inmunológico humano**, utilizando conceptos como **self, non-self, anticuerpos y memoria inmunológica** para detectar comportamientos anómalos dentro de las operaciones de la base de datos.
+El sistema analiza registros antes de insertarlos, detecta comportamientos anómalos, registra alertas, construye memoria histórica y aprende de falsos positivos para mejorar progresivamente su capacidad de respuesta.
 
 ---
 
-## 🎯 Objetivo del Sistema
+## 📌 Descripción
 
-Desarrollar una aplicación que:
+Este proyecto implementa un mecanismo de defensa lógica para operaciones sobre un ERP, trasladando conceptos biológicos al contexto de bases de datos:
 
-- ✅ Aprenda patrones normales de operación en la base de datos.
-- ✅ Detecte anomalías en tiempo real.
-- ✅ Bloquee o alerte operaciones sospechosas.
-- ✅ Registre historial de eventos para mejorar su comportamiento (memoria inmunológica).
+- **Self**: comportamiento esperado o registro válido.
+- **Non-self**: comportamiento anómalo o sospechoso.
+- **Antígeno**: dato ingresado que debe ser evaluado.
+- **Anticuerpo**: regla o mecanismo de validación.
+- **Memoria inmunológica**: historial de anomalías detectadas.
+- **Aprendizaje adaptativo**: incorporación de falsos positivos como excepciones.
 
----
-
-## 🏗️ Estructura del Proyecto
-
-El sistema fue desarrollado bajo una **arquitectura cliente-servidor** utilizando Flask, organizada en los siguientes componentes:
-
-### 🔹 Backend (Python - Flask)
-
-| Archivo | Descripción |
-|---------|-------------|
-| **app.py** | Controlador principal del sistema. Maneja rutas, inserción de datos, análisis inmunológico y comunicación con el frontend. |
-| **db.py** | Encargado de la conexión a la base de datos MySQL. |
-| **inmunologico.py** | Contiene la lógica del sistema inmunológico: detección de anomalías, reglas de validación, registro de alertas y gestión de memoria inmunológica. |
-| **detectores.py** | Define las reglas específicas de detección para cada tabla (venta, compra, gasto, cliente, etc.). |
-| **memoria.py** | Gestiona el almacenamiento y actualización de alertas e historial inmunológico. |
-
-### 🔹 Base de Datos (MySQL)
-
-**Tablas Principales (ERP simplificado):**
-- `venta` - Registros de ventas
-- `compra` - Registros de compras
-- `producto` - Catálogo de productos
-- `cliente` - Base de clientes
-- `proveedor` - Base de proveedores
-- `canal_venta` - Canales de distribución
-- `gasto` - Registro de gastos
-
-**Tablas Auxiliares (Sistema Inmunológico):**
-- `alertas_inmunitarias` - Registro de anomalías detectadas
-- `memoria_inmunologica` - Historial de comportamiento del sistema
-- `patrones_normales` - Valores de referencia (promedios, límites, etc.)
-
-### 🔹 Frontend (HTML + Bootstrap + JS)
-
-| Template | Descripción |
-|----------|-------------|
-| **index.html** | Dashboard único con panel lateral, formularios dinámicos y visualización en tiempo real. |
-| **formulario.html** | Formularios dinámicos generados según la tabla seleccionada. |
-| **tablas.html** | Listado de tablas disponibles. |
-| **alertas.html** | Visualización de alertas inmunológicas. |
-| **historial.html** | Registro histórico de anomalías. |
-| **ver_tabla.html** | Vista detallada de registros en una tabla. |
+El objetivo no es solo insertar datos, sino **evaluarlos antes de persistirlos**, reduciendo errores, inconsistencias y operaciones sospechosas en tablas críticas del sistema. [file:1]
 
 ---
 
-## 🧬 Implementación del Sistema Inmunológico
+## 🎯 Objetivos
 
-### Concepto Biológico → Implementación Digital
+- Detectar anomalías antes de insertar registros.
+- Validar reglas de negocio sobre tablas del ERP.
+- Verificar integridad referencial de claves foráneas.
+- Registrar alertas inmunológicas con severidad.
+- Mantener memoria histórica de anomalías.
+- Aprender de falsos positivos marcados por el usuario.
+- Complementar la detección con modelos de Machine Learning. [file:1]
 
-| Sistema Biológico | Sistema Implementado |
-|-------------------|---------------------|
-| **Self** | Datos normales en la base de datos |
-| **Non-self** | Datos anómalos o inconsistentes |
-| **Antígeno** | Registro sospechoso (ej: venta fuera de rango) |
-| **Anticuerpo** | Reglas de validación |
-| **Memoria inmunológica** | Historial de anomalías |
+---
 
-### Función Principal: `analizar_y_guardar(tabla, datos)`
+## 🏗️ Arquitectura
 
-```python
-def analizar_y_guardar(tabla, datos):
-    """
-    Analiza datos ingresados antes de ser guardados.
-    
-    Retorna: (permitido: bool, anomalias: list)
-    - Si hay anomalías: bloquea operación y registra alerta
-    - Si es válido: permite inserción
-    """
+El proyecto sigue una arquitectura **cliente-servidor** con Flask como backend principal, MySQL como motor de persistencia y una interfaz web basada en plantillas HTML.
+
+### Backend
+
+| Archivo | Función |
+|---------|---------|
+| `app.py` | Controlador principal, rutas, formularios dinámicos, inserción, validación FK, calendario, alertas, memoria y vistas. |
+| `db.py` | Conexión a la base de datos `erp_database`. |
+| `inmunologico.py` | Motor central de análisis inmunológico y agregación de riesgo. |
+| `detectores.py` | Reglas deterministas por tabla y validaciones estadísticas. |
+| `memoria.py` | Gestión de alertas, memoria inmunológica, excepciones y aprendizaje por falsos positivos. |
+| `ml_detector.py` | Entrenamiento y predicción de anomalías con Isolation Forest. | [file:1]
+
+### Frontend
+
+| Archivo | Función |
+|---------|---------|
+| `index.html` | Dashboard principal. |
+| `formulario.html` | Formulario dinámico según la tabla seleccionada. |
+| `alertas.html` | Vista de alertas inmunológicas. |
+| `historial.html` | Historial o trazabilidad de eventos. |
+| `tablas.html` | Listado de tablas disponibles. |
+| `vertabla.html` | Vista tabular de registros. | [file:1]
+
+### Base de datos
+
+#### Tablas principales
+- `venta`
+- `compra`
+- `producto`
+- `cliente`
+- `proveedor`
+- `empleado`
+- `sucursal`
+- `canalventa`
+- `tipoproducto`
+- `tipogasto` [file:1]
+
+#### Tablas auxiliares del sistema inmunológico
+- `alertas_inmunitarias`
+- `memoria_inmunologica`
+- `excepciones_inmunitarias`
+- `calendario` [file:1]
+
+---
+
+## 🧬 Modelo inmunológico
+
+| Concepto biológico | Equivalente en el sistema |
+|--------------------|---------------------------|
+| Self | Operación válida |
+| Non-self | Registro anómalo |
+| Antígeno | Dato ingresado |
+| Anticuerpo | Regla de validación |
+| Memoria inmunológica | Historial de anomalías |
+| Aprendizaje adaptativo | Gestión de falsos positivos | [file:1]
+
+---
+
+## ⚙️ Flujo de funcionamiento
+
+1. El usuario accede al dashboard.
+2. Selecciona una tabla del ERP.
+3. El sistema genera automáticamente el formulario según la estructura de la tabla.
+4. El usuario envía los datos.
+5. Antes de insertar, el sistema:
+   - normaliza tipos numéricos;
+   - valida claves foráneas;
+   - asegura fechas en `calendario`;
+   - ejecuta reglas inmunológicas;
+   - consulta memoria y excepciones;
+   - complementa el análisis con ML si está disponible.
+6. Si el registro es válido, se inserta.
+7. Si es anómalo, se bloquea la operación y se registra la alerta.
+8. El usuario puede marcar alertas como falsos positivos para que el sistema aprenda. [file:1]
+
+---
+
+## 🧪 Detección de anomalías
+
+La detección actual combina dos capas:
+
+### 1. Reglas deterministas
+Implementadas en `detectores.py`, permiten validar condiciones específicas por tabla, por ejemplo:
+
+#### `venta`
+- Precio inválido o menor/igual a cero.
+- Cantidad inválida o menor/igual a cero.
+- Comparación del precio ingresado contra el precio base del producto.
+- Evaluación del valor esperado según la cantidad.
+- Revisión de cantidades inusualmente altas. [file:1]
+
+#### `compra`
+- Precio inválido.
+- Cantidad inválida.
+- Validaciones de consistencia del registro. [file:1]
+
+#### `producto`
+- Precio inválido.
+- Nombre sospechosamente corto.
+- Validación de coherencia general. [file:1]
+
+#### `cliente`
+- Nombre demasiado corto.
+- Datos sospechosos o poco consistentes. [file:1]
+
+### 2. Machine Learning
+El módulo `ml_detector.py` usa **Isolation Forest** para detectar anomalías multivariadas en tablas con suficientes datos numéricos, funcionando como capa complementaria al sistema de reglas. [file:1]
+
+---
+
+## 🧠 Memoria inmunológica
+
+Cada anomalía detectada puede registrarse en dos niveles:
+
+### Alertas inmunitarias
+Se almacenan en `alertas_inmunitarias` con:
+- tabla afectada,
+- tipo,
+- descripción,
+- fecha,
+- severidad. [file:1]
+
+### Memoria inmunológica
+Se almacena en `memoria_inmunologica` con:
+- tabla afectada,
+- tipo de anomalía,
+- versión normalizada,
+- frecuencia,
+- severidad,
+- última ocurrencia. [file:1]
+
+### Excepciones aprendidas
+Los falsos positivos marcados por el usuario se almacenan en `excepciones_inmunitarias`, permitiendo que el sistema no vuelva a tratar esos mismos patrones como amenazas. [file:1]
+
+---
+
+## 📊 Estadísticos
+
+El sistema incluye una vista estadística para apoyar la interpretación de patrones históricos. Actualmente, el enfoque más útil para el proyecto es el análisis **por producto**, mostrando:
+
+- total de ventas por producto;
+- precio promedio;
+- precio mínimo y máximo;
+- desviación estándar del precio;
+- cantidad promedio, mínima y máxima;
+- desviación estándar de cantidad.
+
+Este enfoque se adapta mejor al proyecto que los promedios globales por tabla, ya que permite comparar cada venta contra el comportamiento histórico de su propio producto. [file:1]
+
+---
+
+## 🤖 Machine Learning
+
+### Capacidades actuales
+- Entrenamiento por tabla.
+- Persistencia de modelos `.pkl`.
+- Predicción de anomalías.
+- Cálculo de score de confianza.
+- Integración con Flask mediante endpoints. [file:1]
+
+### Endpoints
+- `GET /api/entrenar_ml/<tabla>`
+- `POST /api/prediccion_ml/<tabla>` [file:1]
+
+> El modelo de Machine Learning complementa el sistema basado en reglas; no lo reemplaza.
+
+---
+
+## 📅 Gestión automática de fechas
+
+Cuando un registro contiene campos de fecha, el sistema verifica si esa fecha existe en la tabla `calendario`. Si no existe, la inserta automáticamente con atributos derivados como año, mes, día, trimestre, semana, nombre del día y nombre del mes. Esto evita errores de integridad referencial en tablas como `venta` y `compra`. [file:1]
+
+---
+
+## 🔗 Validación de claves foráneas
+
+Antes de cada inserción, el sistema verifica que los IDs relacionados realmente existan en sus tablas de referencia. Esto se aplica a campos como:
+
+- `IdProducto`
+- `IdProveedor`
+- `IdCliente`
+- `IdEmpleado`
+- `IdSucursal`
+- `IdCanal`
+- `IdTipoProducto`
+- `IdTipoGasto` [file:1]
+
+También se utiliza un mapeo explícito para columnas cuyo nombre no puede resolverse automáticamente a partir de la FK, por ejemplo:
+- `IdCanal` → `canalventa`
+- `IdTipoProducto` → `tipoproducto`
+- `IdTipoGasto` → `tipogasto` [file:1]
+
+---
+
+## 📥 Endpoint principal de inserción
+
+```http
+POST /api/insertar
 ```
 
----
-
-## ⚙️ Flujo de Funcionamiento
-
-1. 👤 El usuario accede al dashboard
-2. 📋 Selecciona una tabla (ej: venta, compra, producto)
-3. 📝 El sistema genera un formulario dinámico
-4. ✍️ El usuario ingresa datos
-5. 🔍 **Sistema Inmunológico analiza:**
-   - Compara con patrones normales
-   - Valida rangos de valores
-   - Verifica integridad referencial (FK)
-   - Detecta inconsistencias
-6. ✅ **Si es válido:** 
-   - Permite inserción
-   - Guarda en BD
-   - Muestra confirmación
-7. ❌ **Si detecta anomalía:**
-   - Bloquea operación
-   - Registra en `alertas_inmunitarias`
-   - Actualiza `memoria_inmunologica`
-   - Muestra mensaje de error
+### Funciones principales
+- detección dinámica de la estructura de tabla;
+- exclusión de PK autoincrementales;
+- normalización de enteros y decimales;
+- aseguramiento de fechas;
+- validación de claves foráneas;
+- análisis inmunológico;
+- inserción segura final. [file:1]
 
 ---
 
-## 📌 Ejemplos de Detección
+## 🌐 Endpoints disponibles
 
-### 🔴 VENTA
+### Navegación
+- `GET /`
+- `GET /formulario/<tabla>`
+- `GET /api/tablas`
+- `GET /api/tabla/<tabla>`
+- `GET /api/datos/<tabla>` [file:1]
 
-- ❌ Cantidad = 0 o negativa → **Anomalía**
-- ❌ Precio = 0 o negativo → **Anomalía**
-- ❌ Precio > 3x el promedio → **Anomalía**
-- ❌ Cantidad > 3x el promedio → **Anomalía**
-- ⚠️ Campo Precio > 255 caracteres → **Anomalía**
+### Inserción y edición
+- `POST /api/insertar`
+- `POST /api/update`
+- `GET /api/delete/<tabla>/<pk>` [file:1]
 
-### 🔴 COMPRA
+### Sistema inmunológico
+- `GET /api/alertas`
+- `GET /api/memoria`
+- `GET /api/falso_positivo/<id_alerta>` [file:1]
 
-- ❌ Cantidad inválida o cero → **Anomalía**
-- ❌ Monto negativo → **Anomalía**
+### Machine Learning
+- `GET /api/entrenar_ml/<tabla>`
+- `POST /api/prediccion_ml/<tabla>` [file:1]
 
-### 🔴 GASTO
-
-- ❌ Monto > 2x el promedio → **Anomalía**
-- ❌ Monto negativo → **Anomalía**
-
-### 🔴 CLIENTE
-
-- ❌ Nombre < 5 caracteres → **Anomalía**
+### Estadísticos
+- `GET /api/estadisticos` [file:1]
 
 ---
 
-## 🚀 Instalación y Configuración
+## 🧰 Requisitos
 
-### Requisitos
-
-- Python 3.8+
-- MySQL Server (WampServer recomendado)
+- Python 3.8 o superior
+- MySQL 8
 - pip
+- Navegador web moderno [file:1]
 
-### Paso 1: Clonar o descargar el proyecto
+---
 
+## 🚀 Instalación
+
+### 1. Ubicar el proyecto
 ```bash
 cd "c:\Users\dylan\Documents\Phyton\Sistema Imunologico Sistems de Informacion\inmune_system"
 ```
 
-### Paso 2: Instalar dependencias
-
+### 2. Instalar dependencias
 ```bash
-pip install flask mysql-connector-python
+pip install flask mysql-connector-python scikit-learn pandas numpy joblib
 ```
 
-### Paso 3: Configurar base de datos
+### 3. Configurar la base de datos
+```bash
+mysql -u root -p erp_database < db_schema.sql
+```
 
-1. Importar schema SQL:
-   ```bash
-   mysql -u root -p erp_database < db_schema.sql
-   ```
+### 4. Configurar conexión en `db.py`
+```python
+import mysql.connector
 
-2. Actualizar credenciales en `db.py` si es necesario
+def conectar():
+    try:
+        conexion = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="erp_database"
+        )
+        return conexion
+    except Exception as e:
+        print("Error de conexión:", e)
+        return None
+```
 
-### Paso 4: Ejecutar la aplicación
-
+### 5. Ejecutar
 ```bash
 python app.py
 ```
 
-3. Abrir en navegador: [http://localhost:5000](http://localhost:5000)
+### 6. Abrir en navegador
+[http://localhost:5000](http://localhost:5000)
 
 ---
 
-## 🧪 Tecnologías Utilizadas
+## 📂 Estructura del proyecto
 
-| Categoría | Tecnología |
-|-----------|-----------|
-| **Backend** | Python 3, Flask |
-| **Base de Datos** | MySQL 8 |
-| **Frontend** | HTML5, CSS3, Bootstrap 5 |
-| **Interacción** | JavaScript (Fetch API) |
-| **Conector** | mysql-connector-python |
-| **Animaciones** | Animate.css |
-
----
-
-## 💡 Valor del Proyecto
-
-Este sistema no solo valida datos, sino que:
-
-- 🧠 **Aprende** del comportamiento histórico
-- 📈 **Mejora** con el tiempo
-- 🤖 **Simula** inteligencia adaptativa
-- 🛡️ **Protege** la integridad de la BD
-- 📊 **Registra** todo para auditoría
-
----
-
-## 📊 Estructura de Tablas SQL
-
-Ver `db_schema.sql` para detalles completos.
-
-**Tablas clave:**
-
-```sql
--- Alertas inmunológicas
-CREATE TABLE alertas_inmunitarias (
-    Id INT AUTO_INCREMENT PRIMARY KEY,
-    tabla_afectada VARCHAR(100),
-    tipo VARCHAR(100),
-    descripcion TEXT,
-    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    severidad ENUM('BAJA', 'MEDIA', 'ALTA')
-);
-
--- Memoria inmunológica
-CREATE TABLE memoria_inmunologica (
-    Id INT AUTO_INCREMENT PRIMARY KEY,
-    tipo_anomalia VARCHAR(255) UNIQUE,
-    frecuencia INT DEFAULT 1,
-    ultima_ocurrencia TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+```bash
+inmune_system/
+│
+├── app.py
+├── db.py
+├── detectores.py
+├── inmunologico.py
+├── memoria.py
+├── ml_detector.py
+├── requirements.txt
+├── README.md
+│
+├── templates/
+│   ├── index.html
+│   ├── formulario.html
+│   ├── alertas.html
+│   ├── historial.html
+│   ├── tablas.html
+│   └── vertabla.html
+│
+└── __pycache__/
 ```
 
 ---
 
-## 🔗 Endpoints API
+## 📌 Notas técnicas
 
-### 📥 Inserción con Análisis
-
-- **POST** `/api/insertar` - Inserta registro tras análisis inmunológico
-
-### 📤 Obtención de Datos
-
-- **GET** `/api/datos/<tabla>` - Obtiene registros de una tabla
-- **GET** `/api/tabla/<tabla>` - Vista completa de tabla con acciones
-- **GET** `/api/alertas` - Obtiene alertas inmunológicas
-- **GET** `/api/memoria` - Obtiene memoria inmunológica
-- **GET** `/api/formulario/<tabla>` - Genera formulario dinámico
-
-### ✏️ CRUD Genérico
-
-- **GET** `/api/get/<tabla>/<pk>` - Obtiene registro para editar
-- **POST** `/api/update` - Actualiza registro
-- **DELETE** `/api/delete/<tabla>/<pk>` - Elimina registro
+- Las PK autoincrementales no deben enviarse manualmente.
+- Los números deben normalizarse antes de insertarse.
+- El sistema puede bloquear inserciones antes del `INSERT`.
+- La memoria inmunológica crece cuando se detectan anomalías.
+- El análisis ML requiere datos históricos suficientes para entrenar modelos confiables.
+- La vista estadística debe interpretarse como apoyo al análisis, no como único mecanismo de decisión. [file:1]
 
 ---
 
-## 📝 Notas Importantes
+## 💡 Aporte del proyecto
 
-- Todos los valores numéricos soportan formato con comas (ej: "1.234,56" o "1,234.56")
-- No se aplican reglas basadas en IDs o Fechas (evita falsos positivos)
-- Las FKs se validan antes de cada INSERT
-- Los mensajes de error son claros y específicos
+Este sistema no se limita a registrar datos. Su valor está en que:
 
----
-
-## 👨‍💼 Autor
-
-Proyecto desarrollado como Sistema de Inteligencia Artificial Inmunológica para ERP.
-
-**Fecha:** Abril 2026
+- protege la integridad lógica de la base de datos;
+- incorpora validación preventiva;
+- centraliza alertas y memoria histórica;
+- mejora la trazabilidad y auditoría;
+- combina reglas deterministas con aprendizaje automático;
+- aplica una metáfora biológica a un problema real de software empresarial. [file:1]
 
 ---
 
-## 📞 Soporte
+## 📈 Trabajo futuro
 
-Para errores o sugerencias, verifica:
-1. Conexión a MySQL
-2. Permisos en tablas
-3. Valores de entrada válidos
-4. Alertas en dashboard
+- Reentrenamiento automático del modelo ML.
+- Reglas más específicas para más tablas del ERP.
+- Panel gráfico con indicadores inmunológicos.
+- Mayor explicabilidad en alertas.
+- Auditoría por usuario.
+- Aprendizaje incremental basado en excepciones validadas. [file:1]
 
 ---
+
+## 👨‍💻 Autor
+
+Proyecto académico orientado al monitoreo inteligente y protección lógica de bases de datos empresariales.
+
+**Autor:** Dylan  
+**Última actualización:** Mayo 2026
+
+---
+
+## 🛠️ Depuración
+
+Si el sistema no inserta correctamente, revisa:
+
+1. Conexión a MySQL.
+2. Existencia real de claves foráneas.
+3. Estructura de tablas con `SHOW CREATE TABLE`.
+4. Datos enviados por el formulario.
+5. Alertas y memoria inmunológica.
+6. Logs de consola del backend. [file:1]
